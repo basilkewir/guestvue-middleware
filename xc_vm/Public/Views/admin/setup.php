@@ -8,6 +8,7 @@ use XcVm\Core\Database\QueryHelper;
 use XcVm\Core\Http\RequestManager;
 use XcVm\Core\Util\AdminHelpers;
 use XcVm\Core\Util\NetworkUtils;
+use XcVm\Domain\User\GroupService;
 
 include 'functions.php';
 if (!isset(RequestManager::getAll()['update'])):
@@ -70,7 +71,11 @@ if (!isset(RequestManager::getAll()['update'])):
                 $rArray['email'] = RequestManager::getAll()['email'];
                 $rArray['last_login'] = time();
                 $rArray['date_registered'] = $rArray['last_login'];
-                $rArray['member_group_id'] = 1;
+                // First account gets the member group picked in the form, defaulting
+                // to the first group when nothing valid was posted.
+                $rGroups = GroupService::getAll();
+                $rRequestedGroup = isset(RequestManager::getAll()['member_group_id']) ? intval(RequestManager::getAll()['member_group_id']) : 0;
+                $rArray['member_group_id'] = isset($rGroups[$rRequestedGroup]) ? $rRequestedGroup : intval(array_key_first($rGroups) ?: 1);
                 $rArray['ip'] = NetworkUtils::getUserIP();
                 $rArray['last_login'] = time();
                 $rPrepare = QueryHelper::prepareArray($rArray);
@@ -211,6 +216,19 @@ if (!isset(RequestManager::getAll()['update'])):
                                                 <label class="col-md-4 col-form-label" for="email"><?= $language::get('email_address') ?></label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" id="email" name="email" value="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row mb-4">
+                                                <label class="col-md-4 col-form-label" for="member_group_id"><?= $language::get('member_group') ?></label>
+                                                <div class="col-md-8">
+                                                    <select name="member_group_id" id="member_group_id" class="form-control">
+                                                        <?php foreach (GroupService::getAll() as $rGroup): ?>
+                                                            <option value="<?= intval($rGroup['group_id']) ?>"
+                                                                <?= intval($rGroup['group_id']) === 1 ? 'selected' : '' ?>>
+                                                                <?= htmlspecialchars($rGroup['group_name']) ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>

@@ -94,6 +94,9 @@ Excluded on purpose:
   series, episodes, VOD mass-edit and TV profiles. Seeded by
   `bin/install/database.sql` on fresh installs and by
   `migrations/010_add_vod_only_group.sql` on existing ones
+* First-run setup (`Public/Views/admin/setup.php`) offers a **Member Group**
+  choice listing every role instead of hardcoding Administrators, so a new
+  installation can create its first account as any role
 * Modules updated in place: `watch` 1.0.5, `plex` 1.0.3 (archives under
   `modules_archives/`)
 
