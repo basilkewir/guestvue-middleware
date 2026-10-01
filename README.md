@@ -90,6 +90,10 @@ Excluded on purpose:
   `EpgController`, `OndemandController`, `PageAuthorization`, admin routes)
 * nginx tuning: `client_body_timeout 300s`, `client_max_body_size 16m`
 * HTTP port 8089 / HTTPS 443 (the installer prompts and rewrites these)
+* Panel-user role **VOD Only** (vod admin): admin access limited to movies,
+  series, episodes, VOD mass-edit and TV profiles. Seeded by
+  `bin/install/database.sql` on fresh installs and by
+  `migrations/010_add_vod_only_group.sql` on existing ones
 * Modules updated in place: `watch` 1.0.5, `plex` 1.0.3 (archives under
   `modules_archives/`)
 

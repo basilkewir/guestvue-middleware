@@ -70911,7 +70911,8 @@ CREATE TABLE IF NOT EXISTS `users_groups` (
 
 INSERT INTO `users_groups` (`group_id`, `group_name`, `is_admin`, `is_reseller`, `total_allowed_gen_trials`, `total_allowed_gen_in`, `delete_users`, `allowed_pages`, `can_delete`, `create_sub_resellers`, `create_sub_resellers_price`, `reseller_client_connection_logs`, `can_view_vod`, `allow_download`, `minimum_trial_credits`, `allow_restrictions`, `allow_change_username`, `allow_change_password`, `minimum_username_length`, `minimum_password_length`, `allow_change_bouquets`, `notice_html`, `subresellers`) VALUES
 (1, 'Administrators', 1, 0, 0, 'day', 0, '[]', 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 8, 8, 0, NULL, NULL),
-(2, 'Resellers', 0, 1, 100000, 'month', 1, '[]', 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 8, 8, 0, NULL, NULL);
+(2, 'Resellers', 0, 1, 100000, 'month', 1, '[]', 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 8, 8, 0, NULL, NULL),
+(3, 'VOD Only', 1, 0, 0, 'day', 0, '["movies","add_movie","edit_movie","mass_sedits_vod","series","add_series","edit_series","episodes","add_episode","edit_episode","mass_sedits","tprofile"]', 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 8, 8, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
