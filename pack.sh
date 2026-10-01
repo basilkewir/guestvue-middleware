@@ -24,6 +24,8 @@ mkdir -p xc_vm/content/playlists xc_vm/content/video xc_vm/content/vod \
          xc_vm/content/epg xc_vm/content/archive xc_vm/content/streams \
          xc_vm/content/created xc_vm/content/delayed
 mkdir -p xc_vm/storage/images/enigma2 xc_vm/storage/images/admin
+mkdir -p xc_vm/bin/nginx/logs xc_vm/bin/nginx_rtmp/logs xc_vm/bin/php/sockets \
+         xc_vm/bin/php/var/log xc_vm/bin/php/var/run
 
 echo "Packing xc_vm.tar.gz (this takes a minute)..."
 tar -czf xc_vm.tar.gz -C xc_vm .
