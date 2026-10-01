@@ -1,0 +1,101 @@
+#!/bin/sh
+
+SCRIPT=/home/xc_vm
+USER=$(whoami)
+
+if [ "$USER" != "root" ]; then
+  echo "Please run as root!"
+  exit 0
+fi
+
+# Launch every XC_VM service. Does NOT block — shared by start (foreground) and
+# restart (returns to the shell).
+boot() {
+  echo 'Starting XC_VM...'
+  sudo chown -R xc_vm:xc_vm /sys/class/net
+  sudo chown -R xc_vm:xc_vm /home/xc_vm/content/streams
+  sudo chown -R xc_vm:xc_vm /home/xc_vm/tmp
+  if [ -f $SCRIPT/bin/redis/redis-server ]; then
+    sudo -u xc_vm $SCRIPT/bin/redis/redis-server $SCRIPT/bin/redis/redis.conf >/dev/null 2>/dev/null
+  fi
+  sudo -u xc_vm $SCRIPT/bin/nginx/sbin/nginx >/dev/null 2>/dev/null
+  sudo -u xc_vm $SCRIPT/bin/nginx_rtmp/sbin/nginx_rtmp >/dev/null 2>/dev/null
+  sudo -u xc_vm $SCRIPT/bin/daemons.sh
+  # startup runs as root by design (root crontab, embedded `status 1`);
+  # it delegates the cache builds to xc_vm itself.
+  sudo $SCRIPT/bin/php/bin/php $SCRIPT/console.php startup
+  sudo chown xc_vm:xc_vm $SCRIPT/config/config.enc 2>/dev/null
+  sudo -u xc_vm $SCRIPT/bin/php/bin/php $SCRIPT/console.php signals >/dev/null 2>/dev/null &
+  sudo -u xc_vm $SCRIPT/bin/php/bin/php $SCRIPT/console.php watchdog >/dev/null 2>/dev/null &
+  sudo -u xc_vm $SCRIPT/bin/php/bin/php $SCRIPT/console.php queue >/dev/null 2>/dev/null &
+  sudo -u xc_vm $SCRIPT/bin/php/bin/php $SCRIPT/console.php cache_handler >/dev/null 2>/dev/null &
+}
+
+# Foreground entry for systemd (Type=simple): boot, then stay alive so systemd
+# keeps tracking the unit. Holds the terminal BY DESIGN — for a manual,
+# non-blocking restart use `restart` (or `systemctl restart|reload xc_vm`).
+start() {
+  pids=$(pgrep -u xc_vm nginx | wc -l)
+  if [ $pids != 0 ]; then
+    echo 'XC_VM is already running'
+    return 1
+  fi
+  boot
+  echo 'Running in foreground...'
+  sleep infinity
+}
+
+stop() {
+  echo 'Stopping XC_VM...'
+  # PHP-FPM masters daemonize out of systemd's cgroup (start-stop-daemon
+  # --daemonize + per-user sudo session), so a soft/cgroup stop can leave them —
+  # and their OPcache shared memory — alive. Kill EVERYTHING owned by xc_vm by
+  # UID, escalating to SIGKILL, so stop/restart truly recycles FPM and OPcache.
+  # Always returns 0 so systemd's ExecStop never "fails" (which would skip it).
+  pkill -u xc_vm 2>/dev/null || killall -u xc_vm 2>/dev/null || true
+  sleep 2
+  for _ in 1 2 3; do
+    pgrep -u xc_vm >/dev/null 2>&1 || break
+    pkill -9 -u xc_vm 2>/dev/null || killall -9 -u xc_vm 2>/dev/null || true
+    sleep 1
+  done
+  return 0
+}
+
+restart() {
+  # Hard-recycle every xc_vm process EXCEPT ffmpeg (keeps active transcodes/
+  # streams running) then boot fresh — reliably flushes OPcache. Returns to the
+  # shell; does NOT hold the console (boot, not the foreground start).
+  ps -U xc_vm | egrep -v "ffmpeg|PID" | awk '{print $1}' | xargs -r kill -9
+  boot
+}
+
+reload() {
+  pids=$(pgrep -u xc_vm nginx | wc -l)
+  if [ $pids = 0 ]; then
+    echo 'XC_VM is not running'
+    return 1
+  fi
+  echo 'Reloading XC_VM...'
+  sudo -u xc_vm $SCRIPT/bin/nginx/sbin/nginx -s reload
+  sudo -u xc_vm $SCRIPT/bin/nginx_rtmp/sbin/nginx_rtmp -s reload
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  reload)
+    reload
+    ;;
+  restart)
+    restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|reload}"
+esac
+
+exit 0

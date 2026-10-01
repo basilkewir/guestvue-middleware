@@ -1,0 +1,3 @@
+* * * * * /home/xc_vm/bin/php/bin/php /home/xc_vm/console.php cron:root_signals # \XC_VM
+* * * * * /home/xc_vm/bin/php/bin/php /home/xc_vm/console.php cron:root_mysql # \XC_VM
+17 3 * * * sudo -u xc_vm /home/xc_vm/bin/php/bin/php /home/xc_vm/console.php cron:module_licenses # \XC_VM
