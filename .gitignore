@@ -10,8 +10,11 @@ xc_vm/config/install_id
 xc_vm/config/signals.last
 xc_vm/config/sysctl.on
 
-# Panel-generated per-install nginx state (admin access codes).
-xc_vm/bin/nginx/conf/codes/
+# Panel-generated per-install nginx state (admin access-code vhosts).
+# The two stock templates must stay — the installer renders them per install.
+xc_vm/bin/nginx/conf/codes/*
+!xc_vm/bin/nginx/conf/codes/template
+!xc_vm/bin/nginx/conf/codes/template_ministra
 
 # Media / library content from the source host is deliberately NOT tracked.
 # pack.sh recreates the empty directory skeleton the panel expects.
