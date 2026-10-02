@@ -225,11 +225,18 @@
     function initWidget() {
         var src = document.getElementById('stream_source');
         if (!src) return 'no #stream_source on this page';
-        if (document.querySelector('[data-media-upload]')) return null;
 
-        var anchor = findAnchor(src);
-        if (!anchor) return 'no anchor found for #stream_source';
-        anchor.insertAdjacentHTML('afterend', WIDGET_HTML);
+        // Prefer markup the server already rendered — then the widget is
+        // visible even if this script loads late, gets cached, or never runs.
+        var widget = document.querySelector('[data-media-upload]');
+        if (!widget) {
+            var anchor = findAnchor(src);
+            if (!anchor) return 'no anchor found for #stream_source';
+            anchor.insertAdjacentHTML('afterend', WIDGET_HTML);
+            widget = document.querySelector('[data-media-upload]');
+        }
+        if (!widget) return 'widget markup incomplete';
+        if (widget.getAttribute('data-media-upload-bound') === '1') return null;
 
         var input = document.getElementById('media_upload_file');
         var label = document.getElementById('media_upload_label');
@@ -253,8 +260,9 @@
             label.textContent = f.name + ' (' + fmtSize(f.size) + ')';
             startUpload(f, els, input);
         });
+        widget.setAttribute('data-media-upload-bound', '1');
 
-        console.info('[media-upload] mounted after', anchor.className || anchor.tagName);
+        console.info('[media-upload] bound to widget on', src.id);
         return null;
     }
 

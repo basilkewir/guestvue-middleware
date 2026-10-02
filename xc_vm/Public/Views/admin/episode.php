@@ -143,7 +143,7 @@ if (empty($rMulti)) {
 	echo $language::get('episode_path');
 	echo '</label>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<div class="col-md-8 input-group">' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<input type="text" id="stream_source" name="stream_source" class="form-control" value="';
 	echo $rEpisodeSource;
-	echo '" required data-parsley-trigger="change">' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<div class="input-group-append">' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<a href="#file-browser" id="filebrowser" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-folder-open-outline"></i></a>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t" . '</div>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t" . '</div>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t" . '</div>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t" . '<div class="form-group row mb-4">' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<label class="col-md-4 col-form-label" for="notes">';
+	echo '" required data-parsley-trigger="change">' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<div class="input-group-append">' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<a href="#file-browser" id="filebrowser" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-folder-open-outline"></i></a>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t" . '</div>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t" . '</div>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t" . '</div>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t" . '<div class="form-group row mb-4" data-media-upload><label class="col-md-4 col-form-label">Upload from computer</label><div class="col-md-8"><div class="custom-file"><input type="file" class="custom-file-input" id="media_upload_file" accept="video/*,.mkv,.mp4,.avi,.mov,.m4v,.mpg,.mpeg,.ts,.m2ts,.flv,.wmv,.webm,.vob,.rmvb,.3gp"><label class="custom-file-label" for="media_upload_file" id="media_upload_label">Choose video file...</label></div><div class="progress mt-2 mb-0" id="media_upload_progress" style="display:none;height:1.25rem;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:0%;min-width:2.5rem;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div></div><small class="text-muted d-block mt-1" id="media_upload_status" style="display:none;"></small></div></div>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t" . '<div class="form-group row mb-4">' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<label class="col-md-4 col-form-label" for="notes">';
 	echo $language::get('notes');
 	echo '</label>' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<div class="col-md-8">' . "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t" . '<textarea id="notes" name="notes" class="form-control" rows="3" placeholder="">';
 
@@ -1016,7 +1016,7 @@ renderUnifiedLayoutFooter('admin'); ?>
 	<?php endif; ?>
 </script>
 <script src="assets/js/listings.js"></script>
-	<script src="assets/js/media-upload.js"></script>
+	<script src="assets/js/media-upload.js?v=20261002"></script>
 </body>
 
 </html>

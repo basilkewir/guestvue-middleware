@@ -174,6 +174,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
 															</div>
 														</div>
 													</div>
+												<div class="form-group row mb-4" data-media-upload><label class="col-md-4 col-form-label">Upload from computer</label><div class="col-md-8"><div class="custom-file"><input type="file" class="custom-file-input" id="media_upload_file" accept="video/*,.mkv,.mp4,.avi,.mov,.m4v,.mpg,.mpeg,.ts,.m2ts,.flv,.wmv,.webm,.vob,.rmvb,.3gp"><label class="custom-file-label" for="media_upload_file" id="media_upload_label">Choose video file...</label></div><div class="progress mt-2 mb-0" id="media_upload_progress" style="display:none;height:1.25rem;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:0%;min-width:2.5rem;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div></div><small class="text-muted d-block mt-1" id="media_upload_status" style="display:none;"></small></div></div>
 												<?php else: ?>
 													<p class="sub-header">
 														Importing Movies using this method will parse your M3U or folder and push the individual episodes through Watch Folder. If you have category and bouquet allocation set up in Watch Folder Settings then they will be used here too.
@@ -784,7 +785,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
 		<?php endif; ?>
 	</script>
 	<script src="assets/js/listings.js"></script>
-	<script src="assets/js/media-upload.js"></script>
+	<script src="assets/js/media-upload.js?v=20261002"></script>
 	</body>
 
 	</html>
