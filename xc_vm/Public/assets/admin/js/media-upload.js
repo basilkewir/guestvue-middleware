@@ -210,13 +210,25 @@
         });
     }
 
+    /**
+     * Locate the element the widget is inserted after. The source field sits
+     * inside a `.stream-url` form-group on the movie/episode forms; fall back
+     * to any form-group and finally to the input's own parent so a template
+     * change can never silently hide the widget again.
+     */
+    function findAnchor(src) {
+        if (!src || !src.closest) return src ? src.parentNode : null;
+        return src.closest('.stream-url') || src.closest('.form-group') || src.parentNode;
+    }
+
+    /** @returns {string|null} why it did not mount, or null on success. */
     function initWidget() {
         var src = document.getElementById('stream_source');
-        if (!src) return;
-        if (document.querySelector('[data-media-upload]')) return;
+        if (!src) return 'no #stream_source on this page';
+        if (document.querySelector('[data-media-upload]')) return null;
 
-        var anchor = src.closest ? (src.closest('.stream-url') || src.closest('.form-group')) : null;
-        if (!anchor) return;
+        var anchor = findAnchor(src);
+        if (!anchor) return 'no anchor found for #stream_source';
         anchor.insertAdjacentHTML('afterend', WIDGET_HTML);
 
         var input = document.getElementById('media_upload_file');
@@ -224,7 +236,7 @@
         var progress = document.getElementById('media_upload_progress');
         var bar = progress ? progress.querySelector('.progress-bar') : null;
         var status = document.getElementById('media_upload_status');
-        if (!input || !label || !progress || !bar || !status) return;
+        if (!input || !label || !progress || !bar || !status) return 'widget markup incomplete';
 
         var els = {
             input: input,
@@ -241,11 +253,22 @@
             label.textContent = f.name + ' (' + fmtSize(f.size) + ')';
             startUpload(f, els, input);
         });
+
+        console.info('[media-upload] mounted after', anchor.className || anchor.tagName);
+        return null;
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initWidget);
-    } else {
-        initWidget();
+    // Mount with a short retry window: some pages assemble their form after
+    // DOMContentLoaded, so a single early attempt can run before #stream_source
+    // exists and the widget would silently never appear.
+    var attempts = 0;
+    function tryMount() {
+        var why = initWidget();
+        if (why === null) return;
+        if (attempts === 0) console.warn('[media-upload] not mounted yet: ' + why);
+        if (++attempts < 20) setTimeout(tryMount, 250);
+        else console.error('[media-upload] giving up: ' + why);
     }
+
+    tryMount();
 })();
